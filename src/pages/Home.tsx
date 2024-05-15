@@ -1,53 +1,25 @@
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebaseConfig';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebaseConfig';
+import Header from '../components/Header';
 
 function Home() {
-  const[user] = useAuthState(auth);
 
   return (
     <div>
-      {
-        user ? (
-          <>
-            <UserInfo />
-            <SignOutButton />
-          </>
-        ) : (
-          <SignInButton />
-        )
-      }
+      <Header />
+      <h1>Home</h1>
+      <SignOutButton />
     </div>
-  )
-}
-
-export default Home
-
-
-function SignInButton() {
-  const signInWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  return (
-    <button onClick={signInWithGoogle}>ログイン</button>
   )
 }
 
 function SignOutButton() {
+  const signOut = async () => {
+    await auth.signOut();
+  }
+
   return (
-    <button onClick={() => auth.signOut()}>ログアウト</button>
+    <button onClick={signOut}>ログアウト</button>
   )
 }
 
-function UserInfo() {
-  return (
-    <div>
-      <p>ログイン中です</p>
-    </div>
-  )
-}
+export default Home
