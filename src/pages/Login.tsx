@@ -3,12 +3,13 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebaseConfig';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { CircularProgress } from '@mui/material';
 
 function Login() {
   const [user, loading] = useAuthState(auth);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <CircularProgress />
   }
 
   if (!user || !user.email || !user.email.endsWith('@gmail.com')) {

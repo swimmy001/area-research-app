@@ -1,24 +1,13 @@
-import { auth } from '../firebaseConfig';
 import Header from '../components/Header';
+import SchoolSearchForm from '../components/SchoolSearchForm';
 
 function Home() {
 
   return (
     <div>
       <Header />
-      <h1>Home</h1>
-      <SignOutButton />
+      <SchoolSearchForm />
     </div>
-  )
-}
-
-function SignOutButton() {
-  const signOut = async () => {
-    await auth.signOut();
-  }
-
-  return (
-    <button onClick={signOut}>ログアウト</button>
   )
 }
 

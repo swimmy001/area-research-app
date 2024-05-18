@@ -39,6 +39,7 @@ function ResponsiveAppBar() {
   };
 
   return (
+    <>
     <AppBar sx={{ backgroundColor: '#4e5255' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -154,6 +155,8 @@ function ResponsiveAppBar() {
         </Toolbar>
       </Container>
     </AppBar>
+    <Box sx={{ mt: 8 }} />
+    </>
   );
 }
 export default ResponsiveAppBar;
