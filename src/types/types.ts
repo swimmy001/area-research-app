@@ -6,7 +6,7 @@ export type SchoolSearchFormValues = {
 
 export type School = {
   name: string
-  students: number
+  students: number | string
   distance: number
   address: string
   lat: number
@@ -16,8 +16,19 @@ export type School = {
   base_lng: number
   radius: number
   kind_of_school: string
+  url: string
 }
 
 export type SchoolTableProps = {
+  inputValues: SchoolSearchFormValues
+  schools: School[]
+}
+
+export type DownloadFileProps = {
+  inputValues: SchoolSearchFormValues
+  schools: School[]
+}
+
+export type MappingProps = {
   schools: School[]
 }

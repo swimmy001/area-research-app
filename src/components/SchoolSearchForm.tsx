@@ -1,27 +1,33 @@
-import { useState } from 'react'
-import { Button, TextField, MenuItem, CircularProgress } from '@mui/material'
+import { SyntheticEvent, useState } from 'react'
+import { Button, TextField, MenuItem } from '@mui/material'
 import { useForm, FieldErrors, Controller } from 'react-hook-form'
 import { School, SchoolSearchFormValues } from '../types/types'
 import axios, { CancelTokenSource } from 'axios'
+import { Paper, Tab} from '@mui/material'
+import { TabPanel, TabContext, TabList } from '@mui/lab'
+import { useNavigate } from 'react-router-dom'
 import SchoolTable from './SchoolTable'
-
+import LoadingIcon from './LoadingIcon'
+import Mapping from './Mapping'
 
 function SchoolSearchForm() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [schoolData, setSchoolData] = useState<School[]>([]);
   const [cancelTokenSource, setCancelTokenSource] = useState<CancelTokenSource | null>(null);
-
-  const [inputValues, setInputValues] = useState<SchoolSearchFormValues>({
-    target: "",
-    radius: 0,
-    kind: "小学校",
-  })
 
   const defaultValues = {
     target: "",
     radius: 0,
     kind: "小学校",
   }
+
+  const [inputValues, setInputValues] = useState<SchoolSearchFormValues>(defaultValues)
+  const [value, setValue] = useState('1');
+
+  const handleChange = (_: SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
 
   const onsubmit = async (data: SchoolSearchFormValues) => {
     setInputValues(data)
@@ -30,7 +36,7 @@ function SchoolSearchForm() {
     setCancelTokenSource(source);
     try {
       const response = await axios.get(
-        "https://area-research-api-r7nrtxuh7a-an.a.run.app/schools",
+        `${import.meta.env.VITE_API_URL}/schools`,
         {
           cancelToken: source.token,
           params: {
@@ -73,7 +79,7 @@ function SchoolSearchForm() {
       {loading && (
         <>
           <div className="flex flex-col items-center justify-center mt-40">
-            <CircularProgress />
+            <LoadingIcon />
           </div>
           <div className="mt-12">
             <Button onClick={cancelRequest} variant="contained" color="secondary">
@@ -153,7 +159,27 @@ function SchoolSearchForm() {
         </form>
       )}
       {!loading && schoolData.length > 0 && (
-        <SchoolTable schools={schoolData} inputValues={inputValues}/>
+        <>
+          <TabContext value={value}>
+            <Paper>
+              <TabList onChange={handleChange} aria-label="simple tabs example">
+                <Tab label="学校一覧" value="1" />
+                <Tab label="マッピング" value="2" />
+              </TabList>
+              <TabPanel value="1">
+                <SchoolTable schools={schoolData} inputValues={inputValues}/>
+              </TabPanel>
+              <TabPanel value="2">
+                <Mapping schools={schoolData} />
+              </TabPanel>
+            </Paper>
+          </TabContext>
+          <div className="mt-5">
+            <Button onClick={()=>navigate(0)} variant="contained" color="success">
+              ホームへ
+            </Button>
+          </div>
+        </>
       )}
     </>
   )

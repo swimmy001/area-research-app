@@ -15,7 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../firebaseConfig';
 
-const pages = ['学校検索', 'マッピング'];
+const pages = ['学校検索'];
 const settings = ['ログアウト'];
 
 function ResponsiveAppBar() {

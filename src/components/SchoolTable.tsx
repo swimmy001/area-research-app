@@ -7,23 +7,33 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { SchoolTableProps } from '../types/types';
 import { Typography } from '@mui/material';
+import DownloadFile from './DownloadFile';
 
 function createData(
   name: string,
   distance: number,
-  students: number,
+  students: number | string,
+  url: string
 ) {
-  return { name, distance, students };
+  return { name, distance, students, url };
 }
 
 export default function SchoolTable({ schools, inputValues }: SchoolTableProps) {
   const rows = schools.map((school) => {
-    return createData(school.name, Number(school.students), school.distance);
+    const studentCount = isNaN(Number(school.students)) ? "不明" : Number(school.students);
+    return createData(school.name, school.distance, studentCount, school.url);
   });
-  const totalStudents = schools.reduce((acc, school) => acc + Number(school.students), 0);
+
+  const totalStudents = schools.reduce((acc, school) => {
+    const studentCount = isNaN(Number(school.students)) ? 0 : Number(school.students);
+    return acc + studentCount;
+  }, 0);
+
   return (
     <>
-      <Typography sx={{mb: 2}}>{inputValues.target}から半径{inputValues.radius}km内の{inputValues.kind}（計{schools.length}校）</Typography>
+      <Typography sx={{fontSize: '1.2rem', mb: 2}}>
+        {inputValues.target}から半径{inputValues.radius}km内の{inputValues.kind}（計{schools.length}校）
+      </Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="school table">
           <TableHead>
@@ -39,11 +49,11 @@ export default function SchoolTable({ schools, inputValues }: SchoolTableProps) 
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" onClick={()=>window.open(row.url, '_blank', 'noopener,noreferrer')} className="hover:bg-gray-100 cursor-pointer">
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.students}</TableCell>
                 <TableCell align="right">{row.distance}</TableCell>
+                <TableCell align="right">{typeof row.students === 'number' ? row.students : "不明"}</TableCell>
               </TableRow>
             ))}
             <TableRow>
@@ -53,6 +63,9 @@ export default function SchoolTable({ schools, inputValues }: SchoolTableProps) 
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="mt-5">
+        <DownloadFile schools={schools} inputValues={inputValues}/>
+      </div>
     </>
   );
 }
