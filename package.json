@@ -1,9 +1,11 @@
 {
   "name": "area-research-app",
   "private": true,
+  "homepage": "https://swimmy001.github.io/area-research-app/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -24,6 +26,7 @@
     "@vis.gl/react-google-maps": "^1.0.0",
     "axios": "^1.6.8",
     "firebase": "^10.12.0",
+    "gh-pages": "^6.1.1",
     "lottie-web": "^5.12.2",
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
