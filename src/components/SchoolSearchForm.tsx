@@ -19,7 +19,7 @@ function SchoolSearchForm() {
   const defaultValues = {
     target: "",
     radius: 0,
-    kind: "小学校",
+    kind: "小・中学校",
   }
 
   const [inputValues, setInputValues] = useState<SchoolSearchFormValues>(defaultValues)
@@ -35,19 +35,43 @@ function SchoolSearchForm() {
     const source = axios.CancelToken.source();
     setCancelTokenSource(source);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/schools`,
-        {
-          cancelToken: source.token,
-          params: {
-            target: data.target,
-            radius: data.radius,
-            kind_of_school: data.kind
+      if (data.kind === "小・中学校") {
+        const [elemResponse, juniorResponse] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/schools`, {
+            cancelToken: source.token,
+            params: {
+              target: data.target,
+              radius: data.radius,
+              kind_of_school: "小学校"
+            }
+          }),
+          axios.get(`${import.meta.env.VITE_API_URL}/schools`, {
+            cancelToken: source.token,
+            params: {
+              target: data.target,
+              radius: data.radius,
+              kind_of_school: "中学校"
+            }
+          })
+        ]);
+        const combinedData = [...elemResponse.data, ...juniorResponse.data];
+        setSchoolData(combinedData)
+        console.log(combinedData)     
+      } else {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/schools`,
+          {
+            cancelToken: source.token,
+            params: {
+              target: data.target,
+              radius: data.radius,
+              kind_of_school: data.kind
+            }
           }
-        }
-      )
-      setSchoolData(response.data)
-      console.log(response.data)
+        )
+        setSchoolData(response.data)
+        console.log(response.data)
+      }
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Request canceled", error.message);
@@ -143,6 +167,7 @@ function SchoolSearchForm() {
               >
                 <MenuItem value="小学校">小学校</MenuItem>
                 <MenuItem value="中学校">中学校</MenuItem>
+                <MenuItem value="小・中学校">小・中学校</MenuItem>
               </TextField>
             )}
             />
